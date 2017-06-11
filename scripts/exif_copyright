@@ -4,42 +4,42 @@
 
 # Assume the author is me if no name is passed in
 if [ "$1" ]; then
-	AUTHOR="$1"
+	author="$1"
 else
-	AUTHOR="Ben Vreeland"
+	author="Ben Vreeland"
 fi
 
 shopt -s globstar nullglob nocaseglob
-TOTAL=0
+total=0
 for f in **/*.{jpg,jpeg,tif,tiff,dng,cr2,nef}; do
 	if [ "$f" ]; then
 		fshort=${f##*/}
-		YEAR=$(exiftool -s3 -d '%Y' -DateTimeOriginal "$f")
-		if [ "$YEAR" ]; then
-			YEARPAD=$YEAR" "
+		year=$(exiftool -s3 -d '%Y' -DateTimeOriginal "$f")
+		if [ "$year" ]; then
+			yearpad=$year" "
 		elif [[ ${fshort} =~ ^[0-9]{8}_ ]]; then
-			YEAR=${fshort:0:4}
-			YEARPAD=$YEAR" "
+			year=${fshort:0:4}
+			yearpad=$year" "
 		fi
 
 		exiftool \
 			-q \
 			-overwrite_original \
-			-Copyright="$YEARPAD$AUTHOR" \
-			-CopyrightNotice="Copyright $YEARPAD$AUTHOR" \
-			-XPAuthor="$AUTHOR" \
-			-Artist="$AUTHOR" \
-			-Creator="$AUTHOR" \
-			-xmp:CopyrightYear=$YEAR \
-			-xmp:ArtworkCopyrightNotice="Copyright $YEARPAD$AUTHOR" \
-			-Comment="Copyright $YEARPAD$AUTHOR" \
+			-Copyright="$yearpad$author" \
+			-CopyrightNotice="Copyright $yearpad$author" \
+			-XPAuthor="$author" \
+			-Artist="$author" \
+			-Creator="$author" \
+			-xmp:CopyrightYear=$year \
+			-xmp:ArtworkCopyrightNotice="Copyright $yearpad$author" \
+			-Comment="Copyright $yearpad$author" \
 			"$f"
 
 		echo "updated $f"
-		TOTAL=$(( $TOTAL + 1 ))
-		YEAR=""
-		YEARPAD=""
+		total=$(( $total + 1 ))
+		year=""
+		yearpad=""
 	fi
 done
 
-echo -e "\n$TOTAL files updated for $AUTHOR"
+echo -e "\n$total files updated for $author"
