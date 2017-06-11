@@ -3,19 +3,28 @@
 # Writes copyright info to image files using exiftool
 
 # Assume the author is me if no name is passed in
-if [ "$1" ]; then
+if [[ "$1" ]]; then
 	author="$1"
 else
 	author="Ben Vreeland"
 fi
 
+echo -e "Updating files for $author...\n"
+
 shopt -s globstar nullglob nocaseglob
 total=0
+totalskip=0
 for f in **/*.{jpg,jpeg,tif,tiff,dng,cr2,nef}; do
-	if [ "$f" ]; then
+	if [[ "$f" ]]; then
+		if [[ $(exiftool -s3 -Creator "$f") = "$author" ]]; then
+			echo "skipping $f"
+			totalskip=$(( $totalskip + 1 ))
+			continue
+		fi
+
 		fshort=${f##*/}
 		year=$(exiftool -s3 -d '%Y' -DateTimeOriginal "$f")
-		if [ "$year" ]; then
+		if [[ "$year" ]]; then
 			yearpad=$year" "
 		elif [[ ${fshort} =~ ^[0-9]{8}_ ]]; then
 			year=${fshort:0:4}
@@ -42,4 +51,5 @@ for f in **/*.{jpg,jpeg,tif,tiff,dng,cr2,nef}; do
 	fi
 done
 
-echo -e "\n$total files updated for $author"
+echo -e "\n$totalskip files already up to date"
+echo -e "$total files updated for $author"
