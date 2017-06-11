@@ -1,20 +1,27 @@
 #!/bin/bash
+# Written by Ben Vreeland
+# Writes copyright info to image files using exiftool
 
-# Write copyright info to image files.
-
-AUTHOR="Ben Vreeland"
+# Assume the author is me if no name is passed in
+if [ "$1" ]; then
+	AUTHOR="$1"
+else
+	AUTHOR="Ben Vreeland"
+fi
 
 shopt -s globstar nullglob nocaseglob
+TOTAL=0
 for f in **/*.{jpg,jpeg,tif,tiff,dng,cr2,nef}; do
-	if [ -n "$f" ]; then
+	if [ "$f" ]; then
 		fshort=${f##*/}
 		YEAR=$(exiftool -s3 -d '%Y' -DateTimeOriginal $f)
-		if [ -n "$YEAR" ]; then
+		if [ "$YEAR" ]; then
 			YEARPAD=$YEAR" "
 		elif [[ ${fshort} =~ ^[0-9]{8}_ ]]; then
 			YEAR=${fshort:0:4}
 			YEARPAD=$YEAR" "
 		fi
+
 		exiftool \
 			-q \
 			-overwrite_original \
@@ -25,6 +32,14 @@ for f in **/*.{jpg,jpeg,tif,tiff,dng,cr2,nef}; do
 			-Creator="$AUTHOR" \
 			-xmp:CopyrightYear=$YEAR \
 			-xmp:ArtworkCopyrightNotice="Copyright $YEARPAD$AUTHOR" \
+			-Comment="Copyright $YEARPAD$AUTHOR" \
 			$f
+
+		echo "updated $f"
+		TOTAL=$(( $TOTAL + 1 ))
+		YEAR=""
+		YEARPAD=""
 	fi
 done
+
+echo -e "\n$TOTAL files updated for $AUTHOR"
