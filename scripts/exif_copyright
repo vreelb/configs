@@ -14,7 +14,7 @@ TOTAL=0
 for f in **/*.{jpg,jpeg,tif,tiff,dng,cr2,nef}; do
 	if [ "$f" ]; then
 		fshort=${f##*/}
-		YEAR=$(exiftool -s3 -d '%Y' -DateTimeOriginal $f)
+		YEAR=$(exiftool -s3 -d '%Y' -DateTimeOriginal "$f")
 		if [ "$YEAR" ]; then
 			YEARPAD=$YEAR" "
 		elif [[ ${fshort} =~ ^[0-9]{8}_ ]]; then
@@ -33,7 +33,7 @@ for f in **/*.{jpg,jpeg,tif,tiff,dng,cr2,nef}; do
 			-xmp:CopyrightYear=$YEAR \
 			-xmp:ArtworkCopyrightNotice="Copyright $YEARPAD$AUTHOR" \
 			-Comment="Copyright $YEARPAD$AUTHOR" \
-			$f
+			"$f"
 
 		echo "updated $f"
 		TOTAL=$(( $TOTAL + 1 ))
