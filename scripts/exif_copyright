@@ -2,6 +2,16 @@
 # Written by Ben Vreeland
 # Writes copyright info to image files using exiftool
 
+while getopts ":v" opt; do
+	case $opt in
+	v)
+		echo "Verbose output enabled." >&2
+		v=1
+		;;
+	esac
+done
+shift $((OPTIND - 1))
+
 # Assume the author is me if no name is passed in
 if [[ "$1" ]]; then
 	author="$1"
@@ -17,7 +27,9 @@ totalskip=0
 for f in **/*.{jpg,jpeg,tif,tiff,dng,cr2,nef}; do
 	if [[ "$f" ]]; then
 		if [[ $(exiftool -s3 -Creator "$f") = "$author" ]]; then
-			echo "skipping $f"
+			if [[ "$v" ]]; then
+				echo "skipping $f"
+			fi
 			totalskip=$(( $totalskip + 1 ))
 			continue
 		fi
@@ -44,12 +56,17 @@ for f in **/*.{jpg,jpeg,tif,tiff,dng,cr2,nef}; do
 			-Comment="Copyright $yearpad$author" \
 			"$f"
 
-		echo "updated $f"
+		if [[ "$v" ]]; then
+			echo "updated $f"
+		fi
 		total=$(( $total + 1 ))
 		year=""
 		yearpad=""
 	fi
 done
 
-echo -e "\n$totalskip files already up to date"
+if [[ "$v" ]]; then
+	echo ""
+fi
+echo -e "$totalskip files already up to date"
 echo -e "$total files updated for $author"
