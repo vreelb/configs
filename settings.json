@@ -1,0 +1,37 @@
+// Place your settings in this file to overwrite the default settings
+{
+	"telemetry.enableTelemetry": false,
+	"telemetry.enableCrashReporter": false,
+
+	"editor.renderWhitespace": "boundary",
+	"editor.insertSpaces": false,
+	"editor.formatOnPaste": true,
+	"editor.wordWrap": "on",
+	"editor.cursorBlinking": "blink",
+	"editor.renderLineHighlight": "all",
+	"zenMode.hideTabs": false,
+	"css.lint.important": "warning",
+	"html.suggest.angular1": false,
+	"terminal.integrated.shellArgs.windows": ["-l"],
+	"terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+	"git.countBadge": "tracked",
+	"files.exclude": {
+		"**/.git": true,
+		"**/.svn": true,
+		"**/.hg": true,
+		"**/CVS": true,
+		"**/.DS_Store": true,
+		"**/node_modules": true,
+		"**/desktop.ini": true,
+		"**/*.js": {
+			"when": "$(basename).ts"
+		},
+		"**/*.js.map": {
+			"when": "$(basename)"
+
+		}
+	},
+	"files.autoSave": "off",
+	"workbench.colorTheme": "Visual Studio Dark",
+	"workbench.iconTheme": "vscode-great-icons"
+}
